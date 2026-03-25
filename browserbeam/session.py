@@ -47,10 +47,12 @@ class Session:
         self._update(envelope)
         return envelope
 
-    def goto(self, url: str, *, wait_for: Optional[str] = None, wait_timeout: Optional[int] = None) -> SessionEnvelope:
+    def goto(self, url: str, *, wait_for: Optional[str] = None, wait_until: Optional[str] = None, wait_timeout: Optional[int] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {"url": url}
         if wait_for is not None:
             params["wait_for"] = wait_for
+        if wait_until is not None:
+            params["wait_until"] = wait_until
         if wait_timeout is not None:
             params["wait_timeout"] = wait_timeout
         return self.act([{"goto": params}])
@@ -95,11 +97,14 @@ class Session:
         value: str,
         *,
         ref: Optional[str] = None,
+        text: Optional[str] = None,
         label: Optional[str] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {"value": value}
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
         if label is not None:
             params["label"] = label
         return self.act([{"fill": params}])
@@ -108,15 +113,18 @@ class Session:
         self,
         value: str,
         *,
-        label: Optional[str] = None,
         ref: Optional[str] = None,
+        text: Optional[str] = None,
+        label: Optional[str] = None,
         delay: Optional[int] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {"value": value}
-        if label is not None:
-            params["label"] = label
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         if delay is not None:
             params["delay"] = delay
         return self.act([{"type": params}])
@@ -125,28 +133,34 @@ class Session:
         self,
         value: str,
         *,
-        label: Optional[str] = None,
         ref: Optional[str] = None,
+        text: Optional[str] = None,
+        label: Optional[str] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {"value": value}
-        if label is not None:
-            params["label"] = label
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         return self.act([{"select": params}])
 
     def check(
         self,
         *,
-        label: Optional[str] = None,
         ref: Optional[str] = None,
+        text: Optional[str] = None,
+        label: Optional[str] = None,
         checked: Optional[bool] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {}
-        if label is not None:
-            params["label"] = label
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         if checked is not None:
             params["checked"] = checked
         return self.act([{"check": params}])
@@ -159,6 +173,8 @@ class Session:
         amount: Optional[int] = None,
         times: Optional[int] = None,
         ref: Optional[str] = None,
+        text: Optional[str] = None,
+        label: Optional[str] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {}
         if to is not None:
@@ -171,6 +187,10 @@ class Session:
             params["times"] = times
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         return self.act([{"scroll": params}])
 
     def scroll_collect(
@@ -217,6 +237,7 @@ class Session:
         ms: Optional[int] = None,
         selector: Optional[str] = None,
         text: Optional[str] = None,
+        until_js: Optional[str] = None,
         timeout: Optional[int] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {}
@@ -226,6 +247,8 @@ class Session:
             params["selector"] = selector
         if text is not None:
             params["text"] = text
+        if until_js is not None:
+            params["until"] = until_js
         if timeout is not None:
             params["timeout"] = timeout
         return self.act([{"wait": params}])
@@ -248,8 +271,15 @@ class Session:
             params["submit"] = True
         return self.act([{"fill_form": params}])
 
-    def upload(self, ref: str, files: List[str]) -> SessionEnvelope:
-        return self.act([{"upload": {"ref": ref, "files": files}}])
+    def upload(self, files: List[str], *, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None) -> SessionEnvelope:
+        params: Dict[str, Any] = {"files": files}
+        if ref is not None:
+            params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
+        return self.act([{"upload": params}])
 
     def pdf(
         self,
@@ -257,6 +287,8 @@ class Session:
         format: Optional[str] = None,
         landscape: Optional[bool] = None,
         print_background: Optional[bool] = None,
+        scale: Optional[float] = None,
+        margin: Optional[Dict[str, str]] = None,
     ) -> SessionEnvelope:
         params: Dict[str, Any] = {}
         if format is not None:
@@ -265,10 +297,19 @@ class Session:
             params["landscape"] = landscape
         if print_background is not None:
             params["print_background"] = print_background
+        if scale is not None:
+            params["scale"] = scale
+        if margin is not None:
+            params["margin"] = margin
         return self.act([{"pdf": params}])
 
-    def execute_js(self, expression: str) -> SessionEnvelope:
-        return self.act([{"execute_js": {"expression": expression}}])
+    def execute_js(self, code: str, *, result_key: Optional[str] = None, timeout: Optional[int] = None) -> SessionEnvelope:
+        params: Dict[str, Any] = {"code": code}
+        if result_key is not None:
+            params["result_key"] = result_key
+        if timeout is not None:
+            params["timeout"] = timeout
+        return self.act([{"execute_js": params}])
 
     def close(self) -> SessionEnvelope:
         return self.act([{"close": {}}])
@@ -303,10 +344,12 @@ class AsyncSession:
         self._update(envelope)
         return envelope
 
-    async def goto(self, url: str, *, wait_for: Optional[str] = None, wait_timeout: Optional[int] = None) -> SessionEnvelope:
+    async def goto(self, url: str, *, wait_for: Optional[str] = None, wait_until: Optional[str] = None, wait_timeout: Optional[int] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {"url": url}
         if wait_for is not None:
             params["wait_for"] = wait_for
+        if wait_until is not None:
+            params["wait_until"] = wait_until
         if wait_timeout is not None:
             params["wait_timeout"] = wait_timeout
         return await self.act([{"goto": params}])
@@ -333,43 +376,51 @@ class AsyncSession:
             params["label"] = label
         return await self.act([{"click": params}])
 
-    async def fill(self, value: str, *, ref: Optional[str] = None, label: Optional[str] = None) -> SessionEnvelope:
+    async def fill(self, value: str, *, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {"value": value}
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
         if label is not None:
             params["label"] = label
         return await self.act([{"fill": params}])
 
-    async def type(self, value: str, *, label: Optional[str] = None, ref: Optional[str] = None, delay: Optional[int] = None) -> SessionEnvelope:
+    async def type(self, value: str, *, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None, delay: Optional[int] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {"value": value}
-        if label is not None:
-            params["label"] = label
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         if delay is not None:
             params["delay"] = delay
         return await self.act([{"type": params}])
 
-    async def select(self, value: str, *, label: Optional[str] = None, ref: Optional[str] = None) -> SessionEnvelope:
+    async def select(self, value: str, *, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {"value": value}
-        if label is not None:
-            params["label"] = label
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         return await self.act([{"select": params}])
 
-    async def check(self, *, label: Optional[str] = None, ref: Optional[str] = None, checked: Optional[bool] = None) -> SessionEnvelope:
+    async def check(self, *, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None, checked: Optional[bool] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {}
-        if label is not None:
-            params["label"] = label
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         if checked is not None:
             params["checked"] = checked
         return await self.act([{"check": params}])
 
-    async def scroll(self, *, to: Optional[str] = None, direction: Optional[str] = None, amount: Optional[int] = None, times: Optional[int] = None, ref: Optional[str] = None) -> SessionEnvelope:
+    async def scroll(self, *, to: Optional[str] = None, direction: Optional[str] = None, amount: Optional[int] = None, times: Optional[int] = None, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {}
         if to is not None:
             params["to"] = to
@@ -381,6 +432,10 @@ class AsyncSession:
             params["times"] = times
         if ref is not None:
             params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
         return await self.act([{"scroll": params}])
 
     async def scroll_collect(self, *, max_scrolls: Optional[int] = None, wait_ms: Optional[int] = None, timeout_ms: Optional[int] = None, max_text_length: Optional[int] = None) -> SessionEnvelope:
@@ -407,7 +462,7 @@ class AsyncSession:
             params["selector"] = selector
         return await self.act([{"screenshot": params}])
 
-    async def wait(self, *, ms: Optional[int] = None, selector: Optional[str] = None, text: Optional[str] = None, timeout: Optional[int] = None) -> SessionEnvelope:
+    async def wait(self, *, ms: Optional[int] = None, selector: Optional[str] = None, text: Optional[str] = None, until_js: Optional[str] = None, timeout: Optional[int] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {}
         if ms is not None:
             params["ms"] = ms
@@ -415,6 +470,8 @@ class AsyncSession:
             params["selector"] = selector
         if text is not None:
             params["text"] = text
+        if until_js is not None:
+            params["until"] = until_js
         if timeout is not None:
             params["timeout"] = timeout
         return await self.act([{"wait": params}])
@@ -428,10 +485,17 @@ class AsyncSession:
             params["submit"] = True
         return await self.act([{"fill_form": params}])
 
-    async def upload(self, ref: str, files: List[str]) -> SessionEnvelope:
-        return await self.act([{"upload": {"ref": ref, "files": files}}])
+    async def upload(self, files: List[str], *, ref: Optional[str] = None, text: Optional[str] = None, label: Optional[str] = None) -> SessionEnvelope:
+        params: Dict[str, Any] = {"files": files}
+        if ref is not None:
+            params["ref"] = ref
+        if text is not None:
+            params["text"] = text
+        if label is not None:
+            params["label"] = label
+        return await self.act([{"upload": params}])
 
-    async def pdf(self, *, format: Optional[str] = None, landscape: Optional[bool] = None, print_background: Optional[bool] = None) -> SessionEnvelope:
+    async def pdf(self, *, format: Optional[str] = None, landscape: Optional[bool] = None, print_background: Optional[bool] = None, scale: Optional[float] = None, margin: Optional[Dict[str, str]] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {}
         if format is not None:
             params["format"] = format
@@ -439,10 +503,19 @@ class AsyncSession:
             params["landscape"] = landscape
         if print_background is not None:
             params["print_background"] = print_background
+        if scale is not None:
+            params["scale"] = scale
+        if margin is not None:
+            params["margin"] = margin
         return await self.act([{"pdf": params}])
 
-    async def execute_js(self, expression: str) -> SessionEnvelope:
-        return await self.act([{"execute_js": {"expression": expression}}])
+    async def execute_js(self, code: str, *, result_key: Optional[str] = None, timeout: Optional[int] = None) -> SessionEnvelope:
+        params: Dict[str, Any] = {"code": code}
+        if result_key is not None:
+            params["result_key"] = result_key
+        if timeout is not None:
+            params["timeout"] = timeout
+        return await self.act([{"execute_js": params}])
 
     async def close(self) -> SessionEnvelope:
         return await self.act([{"close": {}}])

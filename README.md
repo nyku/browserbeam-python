@@ -92,7 +92,7 @@ session = client.sessions.create(
 | `session.fill_form(fields, submit=)` | Fill and submit a form |
 | `session.wait(ms=)` | Wait for time, selector, or text |
 | `session.pdf()` | Generate a PDF |
-| `session.execute_js(expr)` | Run JavaScript |
+| `session.execute_js(code)` | Run JavaScript |
 | `session.close()` | Close the session |
 
 ## Session Management

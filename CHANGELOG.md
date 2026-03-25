@@ -1,0 +1,42 @@
+# Changelog
+
+All notable changes to the `browserbeam` Python SDK will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [0.2.0] - 2026-03-25
+
+### Added
+
+- `goto`: `wait_until` parameter for JavaScript-based wait conditions
+- `fill`, `type`, `select`, `check`: `text` parameter for element targeting by visible text
+- `scroll`: `text` and `label` parameters for element targeting
+- `wait`: `until_js` parameter for JavaScript-based wait conditions (maps to API `until`)
+- `upload`: `text` and `label` parameters for element targeting (signature changed from positional `ref` to keyword arguments)
+- `execute_js`: `result_key` and `timeout` parameters
+- `pdf`: `scale` and `margin` parameters
+
+### Changed
+
+- `upload` method signature changed from `upload(ref, files)` to `upload(files, *, ref=None, text=None, label=None)` — **breaking change**
+- `execute_js` parameter renamed from `expression` to `code` — **breaking change**
+
+## [0.1.0] - 2026-03-24
+
+### Added
+
+- Initial release
+- Sync client (`Browserbeam`) and async client (`AsyncBrowserbeam`)
+- Session management: `create`, `list`, `get`, `destroy`
+- Navigation: `goto` with `wait_for` and `wait_timeout`
+- Page observation: `observe` with `scope`, `format`, `include_links`, `max_text_length`
+- Interactions: `click`, `fill`, `fill_form`
+- Data extraction: `extract` with schema-based selectors
+- Media: `screenshot`, `pdf`
+- Scrolling: `scroll`, `scroll_collect`
+- Waiting: `wait` with `ms`, `selector`, `text`, `timeout`
+- Session lifecycle: `close`
+- Typed errors: `BrowserbeamError`, `AuthenticationError`, `RateLimitError`, `NotFoundError`, `ValidationError`, `ServerError`
+
+[0.2.0]: https://github.com/nyku/browserbeam-python/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/nyku/browserbeam-python/releases/tag/v0.1.0
