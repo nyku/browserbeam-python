@@ -22,7 +22,7 @@ class SyncHTTP:
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
-                "User-Agent": "browserbeam-python/0.2.0",
+                "User-Agent": "browserbeam-python/0.3.0",
             },
             timeout=timeout,
         )
@@ -62,7 +62,7 @@ class AsyncHTTP:
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
-                "User-Agent": "browserbeam-python/0.2.0",
+                "User-Agent": "browserbeam-python/0.3.0",
             },
             timeout=timeout,
         )

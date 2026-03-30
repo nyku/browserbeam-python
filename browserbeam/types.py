@@ -27,6 +27,13 @@ class InteractiveElement:
 
 
 @dataclass
+class MapEntry:
+    section: str = ""
+    selector: str = ""
+    hint: str = ""
+
+
+@dataclass
 class Changes:
     content_changed: bool = False
     content_delta: Optional[str] = None
@@ -48,6 +55,7 @@ class PageState:
     title: str = ""
     stable: bool = False
     markdown: Optional[MarkdownContent] = None
+    map: Optional[List[MapEntry]] = None
     interactive_elements: List[InteractiveElement] = field(default_factory=list)
     forms: List[Dict[str, Any]] = field(default_factory=list)
     changes: Optional[Changes] = None
@@ -112,6 +120,8 @@ def _parse_page_state(data: Optional[Dict[str, Any]]) -> Optional[PageState]:
         return None
     md_raw = data.get("markdown")
     markdown = _safe_init(MarkdownContent, md_raw) if isinstance(md_raw, dict) else None
+    map_raw = data.get("map")
+    page_map = [_safe_init(MapEntry, m) for m in map_raw] if isinstance(map_raw, list) else None
     elements = [
         _safe_init(InteractiveElement, el) for el in (data.get("interactive_elements") or [])
     ]
@@ -124,6 +134,7 @@ def _parse_page_state(data: Optional[Dict[str, Any]]) -> Optional[PageState]:
         title=data.get("title", ""),
         stable=data.get("stable", False),
         markdown=markdown,
+        map=page_map,
         interactive_elements=elements,
         forms=data.get("forms") or [],
         changes=changes,

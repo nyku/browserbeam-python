@@ -7,6 +7,7 @@ from browserbeam.types import (
     PageState,
     MarkdownContent,
     InteractiveElement,
+    MapEntry,
     Changes,
     ScrollState,
     MediaItem,
@@ -32,6 +33,7 @@ __all__ = [
     "PageState",
     "MarkdownContent",
     "InteractiveElement",
+    "MapEntry",
     "Changes",
     "ScrollState",
     "MediaItem",
@@ -46,4 +48,4 @@ __all__ = [
     "StepExecutionError",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

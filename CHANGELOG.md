@@ -4,6 +4,16 @@ All notable changes to the `browserbeam` Python SDK will be documented in this f
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-03-30
+
+### Added
+
+- `observe`: `mode` parameter — `"main"` (default) or `"full"`. Full mode returns markdown from all page sections (nav, aside, footer, etc.) organized by region headers.
+- `observe`: `include_page_map` parameter — boolean to re-request the structural section map after the first auto-included observe.
+- `MapEntry` dataclass: `section`, `selector`, `hint` describing each page landmark.
+- `PageState.map`: optional list of `MapEntry` — the structural outline of page sections, auto-included on first observe.
+- Both `Session` and `AsyncSession` updated with the new parameters.
+
 ## [0.2.0] - 2026-03-25
 
 ### Added
@@ -38,5 +48,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - Session lifecycle: `close`
 - Typed errors: `BrowserbeamError`, `AuthenticationError`, `RateLimitError`, `NotFoundError`, `ValidationError`, `ServerError`
 
+[0.3.0]: https://github.com/nyku/browserbeam-python/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/nyku/browserbeam-python/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/nyku/browserbeam-python/releases/tag/v0.1.0

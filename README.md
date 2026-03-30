@@ -79,7 +79,7 @@ session = client.sessions.create(
 | Method | Description |
 |--------|-------------|
 | `session.goto(url)` | Navigate to a URL |
-| `session.observe()` | Get page state as markdown |
+| `session.observe()` | Get page state as markdown. Supports `mode="full"` for all sections. |
 | `session.click(ref=)` | Click an element by ref, text, or label |
 | `session.fill(value, ref=)` | Fill an input field |
 | `session.type(value, label=)` | Type text character by character |
@@ -94,6 +94,40 @@ session = client.sessions.create(
 | `session.pdf()` | Generate a PDF |
 | `session.execute_js(code)` | Run JavaScript |
 | `session.close()` | Close the session |
+
+## Page Map & Full Mode
+
+The first `observe` call automatically includes a `page.map` — a lightweight structural outline of the page's landmark regions (header, nav, main, aside, footer) with CSS selectors and descriptive hints. Use it to discover what content is available outside the main area.
+
+```python
+res = session.observe()
+for entry in res.page.map:
+    print(f"{entry.section}: {entry.hint}")
+# nav: Home · Docs · Pricing
+# main: Getting started with Browserbeam...
+# aside: Related posts · Popular tags
+```
+
+To re-request the map on subsequent calls:
+
+```python
+session.observe(include_page_map=True)
+```
+
+When you need content from **all** page sections (sidebars, footer links, nav items), use `mode="full"`. The response markdown is organized by region headers:
+
+```python
+full = session.observe(mode="full", max_text_length=20_000)
+print(full.page.markdown.content)
+# ## [nav]
+# Home · Docs · Pricing
+# ## [main]
+# ...article content...
+# ## [aside]
+# Related posts · ...
+```
+
+Both parameters work identically with `AsyncSession`.
 
 ## Session Management
 

@@ -62,6 +62,8 @@ class Session:
         *,
         scope: Optional[str] = None,
         format: Optional[str] = None,
+        mode: Optional[str] = None,
+        include_page_map: Optional[bool] = None,
         include_links: Optional[bool] = None,
         max_text_length: Optional[int] = None,
     ) -> SessionEnvelope:
@@ -70,6 +72,10 @@ class Session:
             params["scope"] = scope
         if format is not None:
             params["format"] = format
+        if mode is not None:
+            params["mode"] = mode
+        if include_page_map is not None:
+            params["include_page_map"] = include_page_map
         if include_links is not None:
             params["include_links"] = include_links
         if max_text_length is not None:
@@ -354,12 +360,16 @@ class AsyncSession:
             params["wait_timeout"] = wait_timeout
         return await self.act([{"goto": params}])
 
-    async def observe(self, *, scope: Optional[str] = None, format: Optional[str] = None, include_links: Optional[bool] = None, max_text_length: Optional[int] = None) -> SessionEnvelope:
+    async def observe(self, *, scope: Optional[str] = None, format: Optional[str] = None, mode: Optional[str] = None, include_page_map: Optional[bool] = None, include_links: Optional[bool] = None, max_text_length: Optional[int] = None) -> SessionEnvelope:
         params: Dict[str, Any] = {}
         if scope is not None:
             params["scope"] = scope
         if format is not None:
             params["format"] = format
+        if mode is not None:
+            params["mode"] = mode
+        if include_page_map is not None:
+            params["include_page_map"] = include_page_map
         if include_links is not None:
             params["include_links"] = include_links
         if max_text_length is not None:
