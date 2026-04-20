@@ -24,10 +24,17 @@ print(session.page.interactive_elements)
 # Interact with the page
 session.click(ref="e1")
 
-# Extract structured data
+# Extract with CSS, AI, and JS selectors combined
 result = session.extract(
-    title="h1 >> text",
-    links=["a >> href"]
+    products=[{
+        "_parent": ".product-card",
+        "_limit": 3,
+        "name": "h2 >> text",                          # CSS selector
+        "price": ".price >> text",                     # CSS selector
+        "url": "a >> href",                            # CSS attribute
+        "rating": "ai >> the star rating out of 5",    # AI selector
+        "in_stock": "js >> el.querySelector('.stock')?.textContent.includes('In stock')",  # JS
+    }]
 )
 print(result.extraction)
 
@@ -65,12 +72,30 @@ client = Browserbeam(
 session = client.sessions.create(
     url="https://example.com",
     viewport={"width": 1280, "height": 720},
+    user_agent="Mozilla/5.0 ...",  # omit for automatic rotation
     locale="en-US",
     timezone="America/New_York",
-    proxy="http://user:pass@proxy:8080",
     block_resources=["image", "font"],
     auto_dismiss_blockers=True,
     timeout=300,
+)
+```
+
+### Proxies
+
+All sessions use a datacenter proxy by default (country auto-detected from the URL's TLD). No configuration needed. To customize:
+
+```python
+# Use a residential proxy for a specific country
+session = client.sessions.create(
+    url="https://example.com",
+    proxy={"kind": "residential", "country": "us"},
+)
+
+# Or bring your own proxy (overrides managed proxy)
+session = client.sessions.create(
+    url="https://example.com",
+    proxy="http://user:pass@proxy:8080",
 )
 ```
 

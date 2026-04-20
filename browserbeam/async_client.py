@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from browserbeam._http import AsyncHTTP, DEFAULT_BASE_URL, DEFAULT_TIMEOUT
 from browserbeam.session import AsyncSession
@@ -31,7 +31,7 @@ class _AsyncSessions:
         user_agent: Optional[str] = None,
         locale: Optional[str] = None,
         timezone: Optional[str] = None,
-        proxy: Optional[str] = None,
+        proxy: Optional[Union[str, Dict[str, Any]]] = None,
         block_resources: Optional[List[str]] = None,
         auto_dismiss_blockers: Optional[bool] = None,
         cookies: Optional[List[Dict[str, Any]]] = None,

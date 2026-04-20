@@ -4,6 +4,18 @@ All notable changes to the `browserbeam` Python SDK will be documented in this f
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-04-14
+
+### Added
+
+- Managed proxy support: `proxy` parameter now accepts a dict `{"kind": "datacenter"|"residential", "country": "us"|"auto"}` in addition to a BYO proxy URL string.
+- AI-powered selectors: use `"ai >> description"` syntax in `extract` schemas to target elements by natural-language description.
+
+### Changed
+
+- All sessions now route through a datacenter proxy by default (country auto-detected from URL TLD). No configuration needed.
+- Updated README with managed proxy examples, `user_agent` option, and AI selector examples.
+
 ## [0.3.0] - 2026-03-30
 
 ### Added
@@ -48,6 +60,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - Session lifecycle: `close`
 - Typed errors: `BrowserbeamError`, `AuthenticationError`, `RateLimitError`, `NotFoundError`, `ValidationError`, `ServerError`
 
+[0.4.0]: https://github.com/nyku/browserbeam-python/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/nyku/browserbeam-python/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/nyku/browserbeam-python/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/nyku/browserbeam-python/releases/tag/v0.1.0
