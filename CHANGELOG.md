@@ -4,6 +4,18 @@ All notable changes to the `browserbeam` Python SDK will be documented in this f
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - 2026-04-24
+
+### Added
+
+- `SessionInfo` includes optional `error_code` and `error_message` when a session ended in a **failed** state.
+- `SessionListItem` includes optional `error_code` when present in the API response.
+- Session `status` from the API can be `"failed"`; use `sessions.list(status="failed")` to list failed sessions.
+
+### Changed
+
+- `sessions.list` parsing uses safe field mapping so unknown API fields do not break list items.
+
 ## [0.4.0] - 2026-04-14
 
 ### Added

@@ -99,6 +99,8 @@ class SessionInfo:
     ended_at: Optional[str] = None
     duration_seconds: Optional[int] = None
     expires_at: str = ""
+    error_code: Optional[str] = None
+    error_message: Optional[str] = None
 
 
 @dataclass
@@ -106,6 +108,7 @@ class SessionListItem:
     session_id: str = ""
     status: str = ""
     started_at: str = ""
+    error_code: Optional[str] = None
 
 
 @dataclass
@@ -168,11 +171,13 @@ def _parse_session_info(data: Dict[str, Any]) -> SessionInfo:
         ended_at=data.get("ended_at"),
         duration_seconds=data.get("duration_seconds"),
         expires_at=data.get("expires_at", ""),
+        error_code=data.get("error_code"),
+        error_message=data.get("error_message"),
     )
 
 
 def _parse_session_list(data: Dict[str, Any]) -> SessionList:
-    items = [SessionListItem(**s) for s in (data.get("sessions") or [])]
+    items = [_safe_init(SessionListItem, s) for s in (data.get("sessions") or [])]
     return SessionList(
         sessions=items,
         has_more=data.get("has_more", False),

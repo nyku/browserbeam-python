@@ -156,14 +156,16 @@ Both parameters work identically with `AsyncSession`.
 
 ## Session Management
 
+Filter by `status`: `"active"`, `"closed"`, or `"failed"`. Failed sessions ended with a fatal error; `get` returns `error_code` and `error_message`.
+
 ```python
-# List active sessions
 sessions = client.sessions.list(status="active")
+failed = client.sessions.list(status="failed")
 
-# Get session info
 info = client.sessions.get("ses_abc123")
+if info.status == "failed":
+    print(info.error_code, info.error_message)
 
-# Destroy a session
 client.sessions.destroy("ses_abc123")
 ```
 
